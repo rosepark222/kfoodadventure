@@ -14,6 +14,8 @@ public class missle_friend : MonoBehaviour
     private float explosionDuration = 20f;
     private ParticleSystem ps;
     private GameObject missile;
+    private GameObject[] enemies;
+    private bool locked = false;
 
     // Start is called before the first frame update
     void Start()
@@ -34,11 +36,37 @@ public class missle_friend : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        missile = GameObject.FindGameObjectWithTag("Missile");
-        if (missile)
+        if(!locked)
         {
-            target = missile.transform;
+            // missile = GameObject.FindGameObjectWithTag("Missile");
+            enemies = GameObject.FindGameObjectsWithTag("Missile");
+
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                misslescript enemyscript = enemies[i].GetComponent<misslescript>();
+
+                if (enemyscript.locked)
+                {
+                    Debug.Log(string.Format(" {0}th enemy missle is locked", i));
+
+                }
+                else
+                {
+                    missile = enemies[i];
+                    enemyscript.locked = true;
+                    locked = true;
+                    Debug.Log(string.Format("locking {0}th enemy missles", i));
+                    break;
+                }
+            }
+            // missile = enemies[0];
+
+            if (missile)
+            {
+                target = missile.transform;
+            }
         }
+
 
         Vector2 direction;
 
